@@ -4,7 +4,7 @@ WORKDIR /src/a13autehnticate
 COPY . .
 RUN ./mvnw clean package
 
-FROM openjdk:17-jre-slim AS runner
+FROM openjdk:17.0.1-jdk-slim AS runner
 
 ARG USER_NAME=a13autehnticate
 ARG USER_UID=1000
