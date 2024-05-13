@@ -28,9 +28,9 @@ jobs:
 
       - name: Set environment variables
         run: |
-          export SPRING_DATASOURCE_URL=jdbc:postgresql://${{secrets.JDBC_DATABASE_URL}}/authenticate
-          export SPRING_DATASOURCE_USERNAME=${{secrets.JDBC_DATABASE_USERNAME}}
-          export SPRING_DATASOURCE_PASSWORD=${{secrets.JDBC_DATABASE_PASSWORD}}
+          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://${{secrets.JDBC_DATABASE_URL}}/authenticate" >> $GITHUB_ENV
+          echo "SPRING_DATASOURCE_USERNAME=${{secrets.JDBC_DATABASE_USERNAME}}" >> $GITHUB_ENV
+          echo "SPRING_DATASOURCE_PASSWORD=${{secrets.JDBC_DATABASE_PASSWORD}}" >> $GITHUB_ENV
 
       - name: Build with maven
         run: |
