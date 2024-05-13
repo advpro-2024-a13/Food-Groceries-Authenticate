@@ -26,6 +26,12 @@ jobs:
           server-id: github
           settings-path: ${{ github.workspace }}
 
+      - name: Set environment variables
+        run: |
+          export SPRING_DATASOURCE_URL=jdbc:postgresql://${{secrets.JDBC_DATABASE_URL}}/authenticate
+          export SPRING_DATASOURCE_USERNAME=${{secrets.JDBC_DATABASE_USERNAME}}
+          export SPRING_DATASOURCE_PASSWORD=${{secrets.JDBC_DATABASE_PASSWORD}}
+
       - name: Build with maven
         run: |
           chmod +x ./mvnw
