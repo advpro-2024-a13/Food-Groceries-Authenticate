@@ -56,7 +56,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/a13autehnticate:latest
           build-args: |
-            SPRING_DATASOURCE_URL=${{ secrets.JDBC_DATABASE_URL }}
+            SPRING_DATASOURCE_URL=jdbc:postgresql://${{secrets.JDBC_DATABASE_URL}}/authenticate
             SPRING_DATASOURCE_USERNAME=${{ secrets.JDBC_DATABASE_USERNAME }}
             SPRING_DATASOURCE_PASSWORD=${{ secrets.JDBC_DATABASE_PASSWORD }}
 
