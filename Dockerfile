@@ -2,6 +2,7 @@ FROM maven:3.8.3-openjdk-17 AS builder
 
 WORKDIR /src/a13autehnticate
 COPY . .
+RUN chmod +x ./mvnw
 RUN ./mvnw install
 
 FROM openjdk:17.0.1-jdk-slim AS runner
