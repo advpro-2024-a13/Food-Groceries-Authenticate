@@ -71,6 +71,6 @@ jobs:
           flags: '--allow-unauthenticated'
           image: '${{ secrets.DOCKERHUB_USERNAME }}/a13autehnticate:latest'
           env_vars: |
-            SPRING_DATABASE_URL=jdbc:postgresql://${{secrets.JDBC_DATABASE_URL}}/authenticate
-            SPRING_DATABASE_USERNAME=${{secrets.JDBC_DATABASE_USERNAME}}
-            SPRING_DATABASE_PASSWORD=${{secrets.JDBC_DATABASE_PASSWORD}}
+            SPRING_DATASOURCE_URL=jdbc:postgresql://${{secrets.JDBC_DATABASE_URL}}/authenticate
+            SPRING_DATASOURCE_USERNAME=${{secrets.JDBC_DATABASE_USERNAME}}
+            SPRING_DATASOURCE_PASSWORD=${{secrets.JDBC_DATABASE_PASSWORD}}
