@@ -55,6 +55,10 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/a13autehnticate:latest
+          build-args: |
+            SPRING_DATASOURCE_URL=${{ secrets.JDBC_DATABASE_URL }}
+            SPRING_DATASOURCE_USERNAME=${{ secrets.JDBC_DATABASE_USERNAME }}
+            SPRING_DATASOURCE_PASSWORD=${{ secrets.JDBC_DATABASE_PASSWORD }}
 
       - uses: 'google-github-actions/auth@v2'
         with:
