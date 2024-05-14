@@ -2,12 +2,16 @@ package com.bezkoder.springjwt;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
-public class SpringBootSecurityJwtApplicationTests {
+@ActiveProfiles("test")
+class SpringBootSecurityJwtApplicationTests {
 
 	@Test
-	public void contextLoads() {
+	void testMain() {
+		assertDoesNotThrow(() -> SpringBootSecurityJwtApplication.main(new String[] {}));
 	}
-
 }

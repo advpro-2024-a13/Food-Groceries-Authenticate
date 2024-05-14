@@ -1,7 +1,5 @@
 package com.bezkoder.springjwt.payload.response;
 
-import java.util.List;
-
 public class JwtResponse {
   private String token;
   private String type = "Bearer";
@@ -9,15 +7,15 @@ public class JwtResponse {
   private String firstName;
   private String lastName;
   private String email;
-  private List<String> roles;
+  private final String role;
 
-  public JwtResponse(String accessToken, Long id, String email, String firstName, String lastName, List<String> roles) {
+  public JwtResponse(String accessToken, Long id, String email, String firstName, String lastName, String role) {
     this.token = accessToken;
     this.id = id;
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.roles = roles;
+    this.role = role;
   }
 
   public String getAccessToken() {
@@ -68,7 +66,7 @@ public class JwtResponse {
     this.lastName = lastName;
   }
 
-  public List<String> getRoles() {
-    return roles;
+  public String getRole() {
+    return role;
   }
 }

@@ -1,25 +1,5 @@
 package com.bezkoder.springjwt.controllers;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bezkoder.springjwt.models.ERole;
 import com.bezkoder.springjwt.models.Role;
 import com.bezkoder.springjwt.models.User;
@@ -31,7 +11,18 @@ import com.bezkoder.springjwt.repository.RoleRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
 import com.bezkoder.springjwt.security.jwt.JwtUtils;
 import com.bezkoder.springjwt.security.services.UserDetailsImpl;
-import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -51,6 +42,8 @@ public class AuthController {
 
   final
   JwtUtils jwtUtils;
+  
+  String roleNotFound = "Error: Role is not found.";
 
   public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
     this.authenticationManager = authenticationManager;
@@ -64,68 +57,56 @@ public class AuthController {
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
     Authentication authentication = authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
     String jwt = jwtUtils.generateJwtToken(authentication);
-    
-    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    List<String> roles = userDetails.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .toList();
 
-    return ResponseEntity.ok(new JwtResponse(jwt, 
-                        userDetails.getId(), 
-                        userDetails.getFirstName(),
-                        userDetails.getLastName(),
-                        userDetails.getEmail(), 
-                        roles));
+    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    String role = userDetails.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .findFirst()
+            .orElse(null);
+
+    return ResponseEntity.ok(new JwtResponse(jwt,
+            userDetails.id(),
+            userDetails.firstName(),
+            userDetails.lastName(),
+            userDetails.email(),
+            role));
   }
 
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {
       return ResponseEntity
-          .badRequest()
-          .body(new MessageResponse("Error: Email is already in use!"));
+              .badRequest()
+              .body(new MessageResponse("Error: Email is already in use!"));
     }
 
     User user = new User(signUpRequest.getEmail(),
-                         encoder.encode(signUpRequest.getPassword()),
-                         signUpRequest.getFirstName(),
-                         signUpRequest.getLastName());
+            encoder.encode(signUpRequest.getPassword()),
+            signUpRequest.getFirstName(),
+            signUpRequest.getLastName());
 
-    Set<String> strRoles = signUpRequest.getRole();
-    Set<Role> roles = new HashSet<>();
+    String strRole = signUpRequest.getRole();
+    Role role;
 
-    if (strRoles == null) {
-      Role userRole = roleRepository.findByName(ERole.ROLE_PEMBELI)
-          .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-      roles.add(userRole);
+    if (strRole == null) {
+      role = roleRepository.findByName(ERole.ROLE_PEMBELI)
+              .orElseThrow(() -> new RuntimeException(roleNotFound));
     } else {
-      strRoles.forEach(role -> {
-        switch (role) {
-        case "admin":
-          Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(adminRole);
-
-          break;
-        case "mod":
-          Role modRole = roleRepository.findByName(ERole.ROLE_PENGELOLA)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(modRole);
-
-          break;
-        default:
-          Role userRole = roleRepository.findByName(ERole.ROLE_PEMBELI)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(userRole);
-        }
-      });
+        role = switch (strRole) {
+            case "admin" -> roleRepository.findByName(ERole.ROLE_ADMIN)
+                    .orElseThrow(() -> new RuntimeException(roleNotFound));
+            case "pengelola" -> roleRepository.findByName(ERole.ROLE_PENGELOLA)
+                    .orElseThrow(() -> new RuntimeException(roleNotFound));
+            default -> roleRepository.findByName(ERole.ROLE_PEMBELI)
+                    .orElseThrow(() -> new RuntimeException(roleNotFound));
+        };
     }
 
-    user.setRoles(roles);
+    user.setRole(role);
     userRepository.save(user);
 
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
@@ -150,8 +131,8 @@ public class AuthController {
   public ResponseEntity<?> getUserRole(@RequestParam Long id) {
     Optional<User> optionalUser = userRepository.findById(id);
     if (optionalUser.isPresent()) {
-      Set<Role> roles = optionalUser.get().getRoles();
-      return ResponseEntity.ok(roles);
+      Role role = optionalUser.get().getRole();
+      return ResponseEntity.ok(role);
     } else {
       return ResponseEntity.badRequest().body(new MessageResponse("Error: User is not found!"));
     }
