@@ -29,12 +29,14 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
+          restore-keys: ${{ runner.os }}-m2t
+      - name: Build, test, and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SPRING_DATASOURCE_URL: jdbc:postgresql://${{secrets.JDBC_DATABASE_URL}}/authenticate
           SPRING_DATASOURCE_USERNAME: ${{secrets.JDBC_DATABASE_USERNAME}}
           SPRING_DATASOURCE_PASSWORD: ${{secrets.JDBC_DATABASE_PASSWORD}}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=advpro-2024-a13_Food-Groceries-Authenticate
+        run: |
+          mvn test jacoco:report
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=advpro-2024-a13_Food-Groceries-Authenticate

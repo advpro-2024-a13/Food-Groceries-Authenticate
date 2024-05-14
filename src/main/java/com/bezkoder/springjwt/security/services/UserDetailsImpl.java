@@ -1,67 +1,65 @@
 package com.bezkoder.springjwt.security.services;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
+import com.bezkoder.springjwt.models.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.bezkoder.springjwt.models.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public class UserDetailsImpl implements UserDetails {
+  @Serial
   private static final long serialVersionUID = 1L;
 
-  private Long id;
+  private final Long id;
 
-  private String firstName;
+  private final String firstName;
 
-  private String lastName;
+  private final String lastName;
 
-  private String email;
+  private final String email;
 
   @JsonIgnore
-  private String password;
+  private final String password;
 
-  private Collection<? extends GrantedAuthority> authorities;
+  private final GrantedAuthority authority;
 
   public UserDetailsImpl(Long id, String email, String firstName, String lastName, String password,
-      Collection<? extends GrantedAuthority> authorities) {
+                         GrantedAuthority authority) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
     this.password = password;
-    this.authorities = authorities;
+    this.authority = authority;
   }
 
   public static UserDetailsImpl build(User user) {
-    List<GrantedAuthority> authorities = user.getRoles().stream()
-        .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-        .collect(Collectors.toList());
+    GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName().name());
 
     return new UserDetailsImpl(
-        user.getId(), 
-        user.getFirstName(),
-        user.getLastName(), 
-        user.getEmail(),
-        user.getPassword(), 
-        authorities);
+            user.getId(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getEmail(),
+            user.getPassword(),
+            authority);
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return authorities;
+    return List.of(authority);
   }
 
-  public Long getId() {
+  public Long id() {
     return id;
   }
 
-  public String getEmail() {
+  public String email() {
     return email;
   }
 
@@ -100,11 +98,16 @@ public class UserDetailsImpl implements UserDetails {
     return Objects.equals(id, user.id);
   }
 
-  public String getFirstName() {
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+  public String firstName() {
     return firstName;
   }
 
-  public String getLastName() {
+  public String lastName() {
     return lastName;
   }
 
