@@ -3,6 +3,7 @@ package com.bezkoder.springjwt.security.jwt;
 import com.bezkoder.springjwt.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+@Setter
 @Component
 public class JwtUtils {
   private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
@@ -61,15 +63,7 @@ public class JwtUtils {
     return false;
   }
 
-  public void setJwtSecret(String jwtSecret) {
-    this.jwtSecret = jwtSecret;
-  }
-
-  public void setJwtExpirationMs(int jwtExpirationMs) {
-    this.jwtExpirationMs = jwtExpirationMs;
-  }
-
-  public Key getJwtKey() {
+    public Key getJwtKey() {
     return key();
   }
 }

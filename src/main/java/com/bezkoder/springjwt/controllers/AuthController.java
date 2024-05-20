@@ -70,9 +70,9 @@ public class AuthController {
 
     return ResponseEntity.ok(new JwtResponse(jwt,
             userDetails.id(),
+            userDetails.email(),
             userDetails.firstName(),
             userDetails.lastName(),
-            userDetails.email(),
             role));
   }
 
@@ -136,5 +136,14 @@ public class AuthController {
     } else {
       return ResponseEntity.badRequest().body(new MessageResponse("Error: User is not found!"));
     }
+  }
+
+  @GetMapping("/getUserByJwt")
+  public ResponseEntity<UserDetailsImpl> getUserByJwt() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+    return ResponseEntity.ok(userDetails);
   }
 }

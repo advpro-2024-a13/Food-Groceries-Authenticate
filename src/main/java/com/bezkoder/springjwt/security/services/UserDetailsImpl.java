@@ -1,7 +1,7 @@
 package com.bezkoder.springjwt.security.services;
 
 import com.bezkoder.springjwt.models.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,25 +11,29 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+@Getter @Setter
 public class UserDetailsImpl implements UserDetails {
   @Serial
   private static final long serialVersionUID = 1L;
 
   private final Long id;
 
+  private final String email;
+
   private final String firstName;
 
   private final String lastName;
 
-  private final String email;
-
-  @JsonIgnore
   private final String password;
 
-  private final GrantedAuthority authority;
+  private Long createdAt;
+
+  private String role;
+
+  private final Collection<? extends GrantedAuthority> authority;
 
   public UserDetailsImpl(Long id, String email, String firstName, String lastName, String password,
-                         GrantedAuthority authority) {
+                         Collection<? extends GrantedAuthority> authority) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -47,12 +51,12 @@ public class UserDetailsImpl implements UserDetails {
             user.getLastName(),
             user.getEmail(),
             user.getPassword(),
-            authority);
+            List.of(authority));
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(authority);
+    return authority;
   }
 
   public Long id() {
