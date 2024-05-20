@@ -109,6 +109,11 @@ class JwtUtilsTest {
     }
 
     @Test
+    void testValidateJwtTokenStringEmpty() {
+        assertFalse(jwtUtils.validateJwtToken(""));
+    }
+
+    @Test
     void testValidateJwtTokenWithEmptyClaims() {
         String tokenWithoutClaims = Jwts.builder().signWith(jwtUtils.getJwtKey(), SignatureAlgorithm.HS384).compact();
         assertFalse(jwtUtils.validateJwtToken(tokenWithoutClaims));

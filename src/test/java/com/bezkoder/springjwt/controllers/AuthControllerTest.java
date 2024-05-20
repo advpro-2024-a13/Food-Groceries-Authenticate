@@ -265,4 +265,17 @@ class AuthControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Error: User is not found!", ((MessageResponse) Objects.requireNonNull(response.getBody())).getMessage());
     }
+
+    @Test
+    void getUserByJwt() {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        UserDetailsImpl userDetails = Mockito.mock(UserDetailsImpl.class);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+
+        ResponseEntity<UserDetailsImpl> response = authController.getUserByJwt();
+
+        assertEquals(userDetails, response.getBody());
+    }
 }

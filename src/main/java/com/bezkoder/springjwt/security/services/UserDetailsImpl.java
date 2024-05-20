@@ -11,7 +11,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-@Getter @Setter
+@Getter
+@Setter
 public class UserDetailsImpl implements UserDetails {
   @Serial
   private static final long serialVersionUID = 1L;

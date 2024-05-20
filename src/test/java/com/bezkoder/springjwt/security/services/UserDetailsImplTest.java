@@ -101,4 +101,41 @@ class UserDetailsImplTest {
     void hashCodeTest() {
         assertEquals(userDetails.hashCode(), userDetails.hashCode());
     }
+
+    @Test
+    void getId() {
+        assertEquals(1L, userDetails.getId());
+    }
+
+    @Test
+    void setGetCreatedAt() {
+        userDetails.setCreatedAt(null);
+        assertNull(userDetails.getCreatedAt());
+    }
+
+    @Test
+    void setGetRole() {
+        userDetails.setRole(null);
+        assertNull(userDetails.getRole());
+    }
+
+    @Test
+    void getEmail() {
+        assertEquals("john.doe@example.com", userDetails.getEmail());
+    }
+
+    @Test
+    void getFirstName() {
+        assertEquals("John", userDetails.getFirstName());
+    }
+
+    @Test
+    void getLastName() {
+        assertEquals("Doe", userDetails.getLastName());
+    }
+
+    @Test
+    void getAuthority() {
+        assertEquals(List.of(new SimpleGrantedAuthority("ROLE_PEMBELI")), userDetails.getAuthority());
+    }
 }
