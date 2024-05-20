@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class JwtUtilsTest {
@@ -30,7 +32,7 @@ class JwtUtilsTest {
                 "test",
                 "test",
                 "password",
-                authority
+                List.of(authority)
         );
         authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
@@ -44,7 +46,7 @@ class JwtUtilsTest {
                 "test",
                 "test",
                 "password",
-                authority
+                List.of(authority)
         );
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
@@ -62,7 +64,7 @@ class JwtUtilsTest {
                 "test",
                 "test",
                 "password",
-                authority
+                List.of(authority)
         );
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
@@ -81,7 +83,7 @@ class JwtUtilsTest {
                 "test",
                 "test",
                 "password",
-                authority
+                List.of(authority)
         );
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
@@ -104,6 +106,11 @@ class JwtUtilsTest {
         Thread.sleep(2);
         assertFalse(jwtUtils.validateJwtToken(token));
         jwtUtils.setJwtExpirationMs(60000);
+    }
+
+    @Test
+    void testValidateJwtTokenStringEmpty() {
+        assertFalse(jwtUtils.validateJwtToken(""));
     }
 
     @Test

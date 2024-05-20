@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserDetailsImplTest {
@@ -19,7 +21,7 @@ class UserDetailsImplTest {
         User user = new User("john.doe@example.com", "password", "John", "Doe");
         user.setId(1L);
         user.setRole(new Role(ERole.ROLE_PEMBELI));
-        userDetails = new UserDetailsImpl(1L, "john.doe@example.com", "John", "Doe", "password", new SimpleGrantedAuthority("ROLE_PEMBELI"));
+        userDetails = new UserDetailsImpl(1L, "john.doe@example.com", "John", "Doe", "password", List.of(new SimpleGrantedAuthority("ROLE_PEMBELI")));
     }
 
     @Test
@@ -72,9 +74,9 @@ class UserDetailsImplTest {
 
     @Test
     void equals2() {
-        UserDetailsImpl userDetails1 = new UserDetailsImpl(1L, "john.doe@example.com", "John", "Doe", "password", new SimpleGrantedAuthority("ROLE_PENGELOLA"));
-        UserDetailsImpl userDetails2 = new UserDetailsImpl(1L, "jane.doe@example.com", "Jane", "Doe", "password", new SimpleGrantedAuthority("ROLE_PENGELOLA"));
-        UserDetailsImpl userDetails3 = new UserDetailsImpl(2L, "jane.doe@example.com", "Jane", "Doe", "password", new SimpleGrantedAuthority("ROLE_PENGELOLA"));
+        UserDetailsImpl userDetails1 = new UserDetailsImpl(1L, "john.doe@example.com", "John", "Doe", "password", List.of(new SimpleGrantedAuthority("ROLE_PENGELOLA")));
+        UserDetailsImpl userDetails2 = new UserDetailsImpl(1L, "jane.doe@example.com", "Jane", "Doe", "password", List.of(new SimpleGrantedAuthority("ROLE_PENGELOLA")));
+        UserDetailsImpl userDetails3 = new UserDetailsImpl(2L, "jane.doe@example.com", "Jane", "Doe", "password", List.of(new SimpleGrantedAuthority("ROLE_PENGELOLA")));
 
         assertEquals(userDetails1, userDetails2);
         assertNotEquals(userDetails1, userDetails3);
@@ -98,5 +100,42 @@ class UserDetailsImplTest {
     @Test
     void hashCodeTest() {
         assertEquals(userDetails.hashCode(), userDetails.hashCode());
+    }
+
+    @Test
+    void getId() {
+        assertEquals(1L, userDetails.getId());
+    }
+
+    @Test
+    void setGetCreatedAt() {
+        userDetails.setCreatedAt(null);
+        assertNull(userDetails.getCreatedAt());
+    }
+
+    @Test
+    void setGetRole() {
+        userDetails.setRole(null);
+        assertNull(userDetails.getRole());
+    }
+
+    @Test
+    void getEmail() {
+        assertEquals("john.doe@example.com", userDetails.getEmail());
+    }
+
+    @Test
+    void getFirstName() {
+        assertEquals("John", userDetails.getFirstName());
+    }
+
+    @Test
+    void getLastName() {
+        assertEquals("Doe", userDetails.getLastName());
+    }
+
+    @Test
+    void getAuthority() {
+        assertEquals(List.of(new SimpleGrantedAuthority("ROLE_PEMBELI")), userDetails.getAuthority());
     }
 }
