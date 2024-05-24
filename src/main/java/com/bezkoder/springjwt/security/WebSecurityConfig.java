@@ -83,7 +83,7 @@ public class WebSecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://food-groceries-front-production.up.railway.app"));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
     configuration.setExposedHeaders(List.of("x-auth-token"));
