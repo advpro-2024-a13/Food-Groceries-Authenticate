@@ -21,7 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -109,7 +111,11 @@ public class AuthController {
     user.setRole(role);
     userRepository.save(user);
 
-    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    Map<String, Object> response = new HashMap<>();
+    response.put("message", "User registered successfully!");
+    response.put("user", user);
+
+    return ResponseEntity.ok(response);
   }
 
   @GetMapping("/getAll")
