@@ -25,13 +25,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -114,9 +110,25 @@ class AuthControllerTest {
         Role role = new Role(ERole.ROLE_ADMIN);
         when(roleRepository.findByName(ERole.ROLE_ADMIN)).thenReturn(Optional.of(role));
 
-        ResponseEntity<?> response = authController.registerUser(signupRequest);
+        User user = new User(signupRequest.getEmail(), "encodedPassword", signupRequest.getFirstName(), signupRequest.getLastName());
+        user.setRole(role);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
-        assertEquals("User registered successfully!", ((MessageResponse) Objects.requireNonNull(response.getBody())).getMessage());
+        ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
+        assertInstanceOf(Map.class, responseEntity.getBody());
+
+        Map<String, Object> responseBody = (Map<String, Object>) responseEntity.getBody();
+
+        assertEquals("User registered successfully!", responseBody.get("message"));
+
+        assertInstanceOf(User.class, responseBody.get("user"));
+        User responseUser = (User) responseBody.get("user");
+
+        assertEquals(user.getEmail(), responseUser.getEmail());
+        assertEquals(user.getPassword(), responseUser.getPassword());
+        assertEquals(user.getFirstName(), responseUser.getFirstName());
+        assertEquals(user.getLastName(), responseUser.getLastName());
+        assertEquals(user.getRole(), responseUser.getRole());
     }
 
     @Test
@@ -133,9 +145,25 @@ class AuthControllerTest {
         Role role = new Role(ERole.ROLE_PENGELOLA);
         when(roleRepository.findByName(ERole.ROLE_PENGELOLA)).thenReturn(Optional.of(role));
 
-        ResponseEntity<?> response = authController.registerUser(signupRequest);
+        User user = new User(signupRequest.getEmail(), "encodedPassword", signupRequest.getFirstName(), signupRequest.getLastName());
+        user.setRole(role);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
-        assertEquals("User registered successfully!", ((MessageResponse) Objects.requireNonNull(response.getBody())).getMessage());
+        ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
+        assertInstanceOf(Map.class, responseEntity.getBody());
+
+        Map<String, Object> responseBody = (Map<String, Object>) responseEntity.getBody();
+
+        assertEquals("User registered successfully!", responseBody.get("message"));
+
+        assertInstanceOf(User.class, responseBody.get("user"));
+        User responseUser = (User) responseBody.get("user");
+
+        assertEquals(user.getEmail(), responseUser.getEmail());
+        assertEquals(user.getPassword(), responseUser.getPassword());
+        assertEquals(user.getFirstName(), responseUser.getFirstName());
+        assertEquals(user.getLastName(), responseUser.getLastName());
+        assertEquals(user.getRole(), responseUser.getRole());
     }
 
     @Test
@@ -152,9 +180,25 @@ class AuthControllerTest {
         Role role = new Role(ERole.ROLE_PEMBELI);
         when(roleRepository.findByName(ERole.ROLE_PEMBELI)).thenReturn(Optional.of(role));
 
-        ResponseEntity<?> response = authController.registerUser(signupRequest);
+        User user = new User(signupRequest.getEmail(), "encodedPassword", signupRequest.getFirstName(), signupRequest.getLastName());
+        user.setRole(role);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
-        assertEquals("User registered successfully!", ((MessageResponse) Objects.requireNonNull(response.getBody())).getMessage());
+        ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
+        assertInstanceOf(Map.class, responseEntity.getBody());
+
+        Map<String, Object> responseBody = (Map<String, Object>) responseEntity.getBody();
+
+        assertEquals("User registered successfully!", responseBody.get("message"));
+
+        assertInstanceOf(User.class, responseBody.get("user"));
+        User responseUser = (User) responseBody.get("user");
+
+        assertEquals(user.getEmail(), responseUser.getEmail());
+        assertEquals(user.getPassword(), responseUser.getPassword());
+        assertEquals(user.getFirstName(), responseUser.getFirstName());
+        assertEquals(user.getLastName(), responseUser.getLastName());
+        assertEquals(user.getRole(), responseUser.getRole());
     }
 
     @Test
@@ -186,9 +230,25 @@ class AuthControllerTest {
         Role role = new Role(ERole.ROLE_PEMBELI);
         when(roleRepository.findByName(ERole.ROLE_PEMBELI)).thenReturn(Optional.of(role));
 
-        ResponseEntity<?> response = authController.registerUser(signupRequest);
+        User user = new User(signupRequest.getEmail(), "encodedPassword", signupRequest.getFirstName(), signupRequest.getLastName());
+        user.setRole(role);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
-        assertEquals("User registered successfully!", ((MessageResponse) Objects.requireNonNull(response.getBody())).getMessage());
+        ResponseEntity<?> responseEntity = authController.registerUser(signupRequest);
+        assertInstanceOf(Map.class, responseEntity.getBody());
+
+        Map<String, Object> responseBody = (Map<String, Object>) responseEntity.getBody();
+
+        assertEquals("User registered successfully!", responseBody.get("message"));
+
+        assertInstanceOf(User.class, responseBody.get("user"));
+        User responseUser = (User) responseBody.get("user");
+
+        assertEquals(user.getEmail(), responseUser.getEmail());
+        assertEquals(user.getPassword(), responseUser.getPassword());
+        assertEquals(user.getFirstName(), responseUser.getFirstName());
+        assertEquals(user.getLastName(), responseUser.getLastName());
+        assertEquals(user.getRole(), responseUser.getRole());
     }
 
     @Test
